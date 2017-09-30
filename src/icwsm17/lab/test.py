@@ -125,5 +125,12 @@ if __name__ == '__main__':
 #     df_result = pd.DataFrame(df1["MF_speed_density"], df1.MF_basis_density)
 #     df_result.to_csv("/Users/vgong/Desktop/icwsm/kings2016/case2/data/sm_data/processed/0920-v1/result/mf_prob/mf_probability_cell_0_density.txt")
 
-print("test" + "+" + "test2")
+
+#     df = pd.read_csv("/Users/vgong/Desktop/icwsm/kings2016/case2/data/sm_data/processed/0922-v1/case2/mf_speed/mf_probability_cell_0_deltaT_30.txt", index_col = 0)
+#     df2 = pd.DataFrame()
+#     df2["density_speed"] = df["total_density"]
+#     df2.to_csv("/Users/vgong/Desktop/icwsm/kings2016/case2/data/sm_data/processed/0928-v1/case2_deliverables/mf_speed.txt")
+    
+    
+    
     

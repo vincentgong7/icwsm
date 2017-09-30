@@ -1,169 +1,90 @@
 '''
-Created on 24 Sep 2017
+Created on 29 Sep 2017
 
 @author: vgong
 '''
 import pandas as pd
 import icwsm17.measure.metric as MT
 
-class measure(object):
+class Measure(object):
     '''
     classdocs
     '''
 
 
-    def __init__(self):
+    def __init__(self, params):
         '''
         Constructor
         '''
         
-    def mf_flow_mae_cal(self, dic):
-        df_flows = pd.read_csv(dic["mf_flow_dfs_file"], index_col = 0)
-#         print(df_flows)
-        df_sensor = pd.read_csv(dic["mf_sensor_density_file"], index_col = 0)
-        df_sensor_list = df_sensor.sensor_density[dic["hours_start"]:dic["hours_end"]].values
         
-        col_list = list(df_flows.columns.values)
+    
+    @classmethod
+    def mae(cls,dic):
         
-        df_mae = pd.DataFrame(index = ['d_min','d_max','d_mean','d_median','d_std'])
-#         df_mae.set_index()
-        for col in col_list:
-            est_list = df_flows[col][dic["hours_start"]:dic["hours_end"]].values
-            df_mae[col] = MT.Metric.error_metric(df_sensor_list, est_list)
+        basic_v = MT.Metric.error_metric(dic["sensor_list"], dic["mf_basic_list"])[2]
+        gps_v = MT.Metric.error_metric(dic["sensor_list"], dic["mf_gps_list"])[2]
+        speed_v = MT.Metric.error_metric(dic["sensor_list"], dic["mf_speed_list"])[2]
+        flow_v = MT.Metric.error_metric(dic["sensor_list"], dic["mf_flow_list"])[2]
         
-        print(df_mae)
-        return df_mae
+        mae_list = [basic_v,gps_v,speed_v,flow_v]
+#         print(mae_list)
+        
+        return mae_list
+    
+    
+    @classmethod
+    def mape(cls,dic):
+        
+        basic_v = MT.Metric.error_percentage(dic["sensor_list"], dic["mf_basic_list"])
+        gps_v = MT.Metric.error_percentage(dic["sensor_list"], dic["mf_gps_list"])
+        speed_v = MT.Metric.error_percentage(dic["sensor_list"], dic["mf_speed_list"])
+        flow_v = MT.Metric.error_percentage(dic["sensor_list"], dic["mf_flow_list"])
+        
+        mape_list = [basic_v,gps_v,speed_v,flow_v]
+#         print(mape_list)
+        
+        return mape_list
+    
 
-    def mf_speed_mae_cal(self,dic):
-        df_speed = pd.read_csv(dic["mf_speed_dfs_file"], index_col = 0)
-#         print(df_flows)
-        df_sensor = pd.read_csv(dic["mf_sensor_density_file"], index_col = 0)
-        df_sensor_list = df_sensor.sensor_density[dic["hours_start"]:dic["hours_end"]].values
+    @classmethod
+    def pearsonr(cls,dic):
         
-        col_list = list(df_speed.columns.values)
+        basic_v = MT.Metric.pearsonr_metric(dic["sensor_list"], dic["mf_basic_list"])
+        gps_v = MT.Metric.pearsonr_metric(dic["sensor_list"], dic["mf_gps_list"])
+        speed_v = MT.Metric.pearsonr_metric(dic["sensor_list"], dic["mf_speed_list"])
+        flow_v = MT.Metric.pearsonr_metric(dic["sensor_list"], dic["mf_flow_list"])
         
-        df_mae = pd.DataFrame(index = ['d_min','d_max','d_mean','d_median','d_std'])
-#         df_mae.set_index()
-        for col in col_list:
-            est_list = df_speed[col][dic["hours_start"]:dic["hours_end"]].values
-            df_mae[col] = MT.Metric.error_metric(df_sensor_list, est_list)
+        correlation = [basic_v[0],gps_v[0],speed_v[0],flow_v[0]]
+        p_value = [basic_v[1],gps_v[1],speed_v[1],flow_v[1]]
         
-        print(df_mae)
-        return df_mae 
-    
-    def mf_flow_mape_cal(self, dic):
-        df_flows = pd.read_csv(dic["mf_flow_dfs_file"], index_col = 0)
-#         print(df_flows)
-        df_sensor = pd.read_csv(dic["mf_sensor_density_file"], index_col = 0)
-        df_sensor_list = df_sensor.sensor_density[dic["hours_start"]:dic["hours_end"]].values
+        pearsonr_list = [correlation,p_value]
+#         print(pearsonr_list)
         
-        col_list = list(df_flows.columns.values)
-        
-        df_mape = pd.DataFrame(index = ['mape'])
-#         df_mae.set_index()
-        for col in col_list:
-            est_list = df_flows[col][dic["hours_start"]:dic["hours_end"]].values
-            df_mape[col] = MT.Metric.error_percentage(df_sensor_list, est_list)
-        
-        print(df_mape)
-        return df_mape
-    
-    
-    def mf_speed_mape_cal(self,dic):
-        df_speed = pd.read_csv(dic["mf_speed_dfs_file"], index_col = 0)
-#         print(df_flows)
-        df_sensor = pd.read_csv(dic["mf_sensor_density_file"], index_col = 0)
-        df_sensor_list = df_sensor.sensor_density[dic["hours_start"]:dic["hours_end"]].values
-        
-        col_list = list(df_speed.columns.values)
-        
-        df_mape = pd.DataFrame(index = ['mape'])
-#         df_mae.set_index()
-        for col in col_list:
-            est_list = df_speed[col][dic["hours_start"]:dic["hours_end"]].values
-            df_mape[col] = MT.Metric.error_percentage(df_sensor_list, est_list)
-        
-        print(df_mape)
-        return df_mape
-        
-    def mf_flow_spearman_cal(self,dic):
-        df_flows = pd.read_csv(dic["mf_flow_dfs_file"], index_col = 0)
-#         print(df_flows)
-        df_sensor = pd.read_csv(dic["mf_sensor_density_file"], index_col = 0)
-        df_sensor_list = df_sensor.sensor_density[dic["hours_start"]:dic["hours_end"]].values
-        
-        col_list = list(df_flows.columns.values)
-        
-        df_spearman = pd.DataFrame(index = ['correlation','p_value'])
-#         df_mae.set_index()
-        for col in col_list:
-            est_list = df_flows[col][dic["hours_start"]:dic["hours_end"]].values
-            df_spearman[col] = MT.Metric.spearmanr_metric(df_sensor_list, est_list)
-        
-        print(df_spearman)
-        return df_spearman
-    
-    
-    def mf_speed_spearman_cal(self,dic):
-        df_speed = pd.read_csv(dic["mf_speed_dfs_file"], index_col = 0)
-#         print(df_flows)
-        df_sensor = pd.read_csv(dic["mf_sensor_density_file"], index_col = 0)
-        df_sensor_list = df_sensor.sensor_density[dic["hours_start"]:dic["hours_end"]].values
-        
-        col_list = list(df_speed.columns.values)
-        
-        df_spearman = pd.DataFrame(index = ['correlation','p_value'])
-#         df_mae.set_index()
-        for col in col_list:
-            est_list = df_speed[col][dic["hours_start"]:dic["hours_end"]].values
-            df_spearman[col] = MT.Metric.spearmanr_metric(df_sensor_list, est_list)
-        
-        print(df_spearman)
-        return df_spearman 
-    
+        return pearsonr_list
+
 def main():
     
-    m = measure()
-    output_folder = '/Users/vgong/Desktop/icwsm/kings2016/case2/data/sm_data/processed/0922-v1/case2'
-    
+    output_folder = '/Users/vgong/Desktop/icwsm/kings2016/case2/data/sm_data/processed/0928-v1/case2_deliverables'
     dic = {}
-    flow_folder = 'mf_flow_all_deltaT'
-    speed_folder = 'mf_speed_all_deltaT'
-    
-    dic["mf_flow_dfs_file"] = "{}/{}/mf_flow_per_hour_deltaT.txt".format(output_folder,flow_folder)
-    dic["mf_speed_dfs_file"] = "{}/{}/mf_speed_all.txt".format(output_folder,speed_folder)
-    dic["mf_sensor_density_file"] = "{}/sensor/sensor_density_per_hour.txt".format(output_folder)
-    dic["hours_start"] = 0
-    dic["hours_end"] = 60
-    
-    '''MAE:'''
-#     flow_mae_full_df = m.mf_flow_mae_cal(dic)
-#     flow_mae_full_df.to_csv("{}/{}/flow_mae_full_df.txt".format(output_folder,flow_folder))
-#     
-#     speed_mae_full_df = m.mf_speed_mae_cal(dic)
-#     speed_mae_full_df.to_csv("{}/{}/speed_mae_full_df.txt".format(output_folder,speed_folder))
-    
-    '''MAPE:'''
-    flow_mape_full_df = m.mf_flow_mape_cal(dic)
-    flow_mape_full_df.to_csv("{}/{}/flow_mape_full_df.txt".format(output_folder,flow_folder))
-     
-    speed_mape_full_df = m.mf_speed_mape_cal(dic)
-    speed_mape_full_df.to_csv("{}/{}/speed_mape_full_df.txt".format(output_folder,speed_folder))    
-    
-    
-    
-    
-    '''Spearman'''
-    
-#     flow_spearman_full_df = m.mf_flow_spearman_cal(dic)
-#     flow_spearman_full_df.to_csv("{}/{}/flow_spearman_full_df.txt".format(output_folder,flow_folder))
-#     
-#     speed_spearman_full_df = m.mf_speed_spearman_cal(dic)
-#     speed_spearman_full_df.to_csv("{}/{}/speed_spearman_full_df.txt".format(output_folder,speed_folder))
-    
+    dic["output_folder"] = output_folder
+    dic["sensor_list"] = pd.read_csv(output_folder+"/sensor_density_per_hour.txt", index_col = 0)["sensor_density"].values
+    dic["mf_basic_list"] = pd.read_csv(output_folder+"/mf_basic.txt", index_col = 0)["density_basic"].values
+    dic["mf_gps_list"] = pd.read_csv(output_folder+"/mf_gps.txt", index_col = 0)["density_gps"].values
+    dic["mf_speed_list"] = pd.read_csv(output_folder+"/mf_speed.txt", index_col = 0)["density_speed"].values
+    dic["mf_flow_list"] = pd.read_csv(output_folder+"/mf_flow.txt", index_col = 0)["density_flow"].values
 
+    mae_list = Measure.mae(dic)
+    mape_list = Measure.mape(dic)
+    pearsonr = Measure.pearsonr(dic)
+    pear_coe = pearsonr[0]
+    pear_p = pearsonr[1]
+    
+    df = pd.DataFrame({"mae":mae_list,"mape":mape_list, "pear_coe": pear_coe, "pear_p":pear_p},index = ['mf_basic_list','mf_gps_list','mf_speed_list','mf_flow_list'])
+    print(df)
+    df.to_csv(output_folder + "/measure_delta_30mins.txt")
+    
     return 0
-
 
 
 

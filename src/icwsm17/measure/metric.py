@@ -7,6 +7,7 @@ import numpy as np
 from scipy.stats.stats import pearsonr   
 from scipy.stats import spearmanr
 import pandas as pd
+import math
 
 class Metric(object):
     '''
@@ -34,16 +35,16 @@ class Metric(object):
     @classmethod 
     def error_metric(cls, list1, list2):
         dis_list = cls.dis_metric(list1, list2)
-        dis_array = np.asarray(dis_list)
-    
-        d_min = np.amin(dis_array)
-        d_max = np.amax(dis_array)
-        d_mean = np.mean(dis_array)
-        d_median = np.median(dis_array)
-        d_std = np.std(dis_array)
+        dis_array = np.asarray(dis_list, dtype=np.float64)
+        
+        d_min = np.nanmin(dis_array)
+        d_max = np.nanmax(dis_array)
+        d_mean = np.nanmean(dis_array, dtype=np.float64)
+        d_median = np.nanmedian(dis_array)
+        d_std = np.nanstd(dis_array)
     
         result = [d_min,d_max,d_mean,d_median,d_std]
-        return result    
+        return result
 
     @classmethod 
     def error_percentage(cls, sensor_list, est_list):
@@ -57,7 +58,7 @@ class Metric(object):
             unit_list.append(unit)
          
         unit_arr = np.asarray(unit_list)   
-        mape_mean = np.mean(unit_arr)
+        mape_mean = np.nanmean(unit_arr)
         
         return mape_mean
     
@@ -65,11 +66,13 @@ class Metric(object):
     @classmethod 
     def pearsonr_metric(cls, list1, list2):
         l1, l2 = [],[]
-        for i in range(0, len(list1)):
-            if list1[i]==None or list2[i]==None:
+        for i in range(0, min(len(list1), len(list2))):
+            if list1[i]==None or list2[i]==None or math.isnan(list1[i]) or math.isnan(list2[i]):
                 continue
             l1.append(list1[i])
             l2.append(list2[i])
+        print(l1)
+        print(l2)
         result = pearsonr(l1,l2)
     #     print(result) # (Pearson’s correlation coefficient, 2-tailed p-value)
         return result
@@ -80,8 +83,6 @@ class Metric(object):
         for i in range(0, len(list1)):
             if list1[i]==None or list2[i]==None:
                 continue
-            l1.append(list1[i])
-            l2.append(list2[i])
         result = spearmanr(l1,l2)
     #     print(result) # (Spearman’s correlation coefficient, 2-tailed p-value)
         return result

@@ -11,6 +11,7 @@ import icwsm17.mfs.toolbox as tb
 import icwsm17.common.extendarea as exarea
 import psycopg2
 import numpy as np
+import pandas as pd
 
 class MF_gps(object):
         
@@ -53,12 +54,12 @@ class MF_gps(object):
             total = total/cp.cell_area[cell_id]
             
             result_list.append([i, start_ts,end_ts, twitter, inst, total])
-            result_total_value_list.append([total])
+            result_total_value_list.append(total)
             print('{} times, {} users'.format(i, total))
         
-        result_total_value_list = np.asarray(result_total_value_list)
+#         result_total_value_list = np.asarray(result_total_value_list)
         result = [result_list, result_total_value_list]
-        return result
+        return result_total_value_list
     
     def membership_fun_basic_twitter(self, cell_coord_list, start_ts, end_ts, conn):
         
@@ -97,7 +98,7 @@ def main():
     
     strategy_suffix = 'gps'
     port = 9634
-    outputfolder = '/Users/vgong/Desktop/icwsm/kings2016/case2/data/sm_data/processed/0911-v1'
+    outputfolder = '/Users/vgong/Desktop/icwsm/kings2016/case2/data/sm_data/processed/0922-v1/case2/mf_gps'
 
 #    configured for runing on the server
 #     port = 5432
@@ -114,18 +115,22 @@ def main():
         # cell_id, record_start_ts, record_end_ts
         
         result = mf_strategy.call_membership_fun_gps(cell_id, record_start_ts, record_end_ts)
-        result_list = result[0]
-        result_total_value_list = result[1]
+#         result_list = result[0]
+#         result_total_value_list = result[1]
         
         print('\n\n\n !DONE! \n\n\n')
         
-#         save as a numpy table
-        tb.printlist(result_total_value_list)
-        np.save(output_file, result_total_value_list)
+        result_total_value_df = pd.DataFrame({"density_gps":result})
+        print(result_total_value_df)
+        result_total_value_df.to_csv(output_file)
         
-#         save to file
-        tb.printlist(result_list)
-        tb.mywritelines2file(tb.mf_result_list_transfer(result_list), output_file)
+# #         save as a numpy table
+#         tb.printlist(result_total_value_list)
+#         np.save(output_file, result_total_value_list)
+#         
+# #         save to file
+#         tb.printlist(result_list)
+#         tb.mywritelines2file(tb.mf_result_list_transfer(result_list), output_file)
 
 
 
