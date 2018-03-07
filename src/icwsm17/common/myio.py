@@ -29,4 +29,4 @@ def test_fun(a, b):
     return c
 
 
-test_fun(1)
+# test_fun(1)

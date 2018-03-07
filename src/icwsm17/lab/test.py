@@ -9,6 +9,8 @@ from icwsm17.common.MyDB import MyDB
 import pandas as pd
 from icwsm17.entity.DBSource import DBSource as DBS
 from icwsm17.entity.DBDetail import DBDetail as DBD
+import icwsm17.mfs.cell_profile as cp
+import icwsm17.common.extendarea as exarea
 
 if __name__ == '__main__':
     print("test")
@@ -131,6 +133,24 @@ if __name__ == '__main__':
 #     df2["density_speed"] = df["total_density"]
 #     df2.to_csv("/Users/vgong/Desktop/icwsm/kings2016/case2/data/sm_data/processed/0928-v1/case2_deliverables/mf_speed.txt")
     
-    
-    
+#     cell_coord_list = cp.cell_points_list[0]
+#     cell_coord_list = exarea.cell_extend(cp.cell_points_list[0], 113)
+# #     cell_coord_list = tb.cell_extend(cp.cell_points_list[0], 2520.0)
+#     sql_fields = "count(distinct post_id)"
+#     sql_table_name = "case2smd.v_twitter_geo_is"
+#     area_str = tb.transfer_coords(cell_coord_list)
+#     sql = "SELECT {} FROM {} as t1 where ST_Within(ST_MakePoint(t1.lon, t1.lat),ST_GeomFromText('POLYGON(({}))'));".format(sql_fields,sql_table_name,area_str)
+#     print(sql)
+
+
+    for dd in range(26,29):
+        
+        for hh in range(0,10):
+            print("2016-04-{} 0{}:00:00".format(dd,hh))
+        
+        for hh in range(10,24):
+            print("2016-04-{} {}:00:00".format(dd,hh))
+
+
+
     

@@ -4,7 +4,7 @@ Created on 14 Feb 2017
 @author: vgong
 '''
 import psycopg2
-
+from icwsm17.entity.DBSource import DBSource as DBS
 
 
 class MyDB(object):
@@ -60,5 +60,21 @@ class MyDB(object):
         except Exception as e:
             print(e)
 
-if __name__ == '__main__':
+
+def main():
     print ("This only executes when %s is executed rather than imported" % __file__)
+
+    dbs = DBS()
+    mydb = MyDB.from_dbs(dbs)
+    cursor = mydb.get_cursor()
+    
+    sql = 'SELECT * FROM case2sensor.v_cam_data_cell limit 5'
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    cursor.close()
+    for i in range(0,len(rows)):
+        print(rows[i])
+
+
+
+if __name__ == '__main__': main()
